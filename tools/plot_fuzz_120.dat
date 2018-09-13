@@ -1,0 +1,20 @@
+#set title "Anki \"Fuzzed\" Intervals" font "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" #offset 0,-0.5
+set xlabel "Input Interval" font "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" #offset 0,.5
+set ylabel "\"Fuzzed\" Interval" font "/usr/share/fonts/truetype/msttcorefonts/arial.ttf" offset 1,0
+set xrange [0:120]
+set yrange [0:120]
+set style line 101 lt 1 lc rgb "gray" lw 1
+set grid mxtics mytics ls 101
+set grid xtics,ytics ls 101
+set xtics 0,30 scale .5,.5
+set ytics 0,30 scale .5,.5
+#set mxtics 30
+#set mytics 30
+set size square
+set key off
+set grid ytics lt 1 lw 1 lc rgb "#bbbbbb"
+set grid xtics lt 1 lw 1 lc rgb "#bbbbbb"
+set term png size 350,350 butt truecolor
+#set terminal svg size 280,300 dynamic background rgb "white"
+set style line 1 lc rgb '#FF0000' pt 5 ps .17
+plot 'dump_fuzz.out' using ($1+.5):($2-.5) with points ls 1
