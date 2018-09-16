@@ -1,14 +1,18 @@
 import sys
 import anki
+import datetime
+from aqt import mw
 from anki.sched import Scheduler
 from anki.schedv2 import Scheduler
 
 
-_debug_lvl = 2
+def log_info(message):
+    if c["LogLevel"] >= 1:
+        sys.stdout.write(message)
 
 
-def dbg(message, level):
-    if _debug_lvl >= level:
+def log_debug(message):
+    if c["LogLevel"] >= 2:
         sys.stdout.write(message)
 
 
@@ -23,12 +27,13 @@ def load_balanced_ivl(self, ivl):
                                        self.today + check_ivl)
         if num_cards <= min_num_cards:
             best_ivl = check_ivl
-            dbg("> ", 2)
+            log_debug("> ")
             min_num_cards = num_cards
         else:
-            dbg("  ", 2)
-        dbg("check_ivl {0:<4} num_cards {1:<4} best_ivl {2:<4}\n".format(check_ivl, num_cards, best_ivl), 2)
-    dbg("* orig_ivl {0:<4} min_ivl {1:<4} max_ivl {2:<4} best_ivl {3:<4} ****\n".format(orig_ivl, min_ivl, max_ivl, best_ivl), 1)
+            log_debug("  ")
+        log_debug("check_ivl {0:<4} num_cards {1:<4} best_ivl {2:<4}\n".format(check_ivl, num_cards, best_ivl))
+    log_info("{0:<28} orig_ivl {1:<4} min_ivl {2:<4} max_ivl {3:<4} best_ivl {4:<4}\n"
+             .format(str(datetime.datetime.now()), orig_ivl, min_ivl, max_ivl, best_ivl))
     return best_ivl
 
 
@@ -36,3 +41,6 @@ anki.sched.Scheduler._fuzzedIvl = load_balanced_ivl
 
 
 anki.schedv2.Scheduler._fuzzedIvl = load_balanced_ivl
+
+
+c = mw.addonManager.getConfig(__name__)
