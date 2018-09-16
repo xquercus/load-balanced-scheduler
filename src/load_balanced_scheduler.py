@@ -1,3 +1,7 @@
+        x# Copyright (C) 2018 Jeff Stevens
+# This software is licensed under the GNU GPL v3
+
+
 import sys
 import anki
 import datetime
