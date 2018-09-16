@@ -1,5 +1,5 @@
 #set title "Anki \"Fuzzed\" Intervals" font "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" #offset 0,-0.5
-set xlabel "Input Interval" font "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" #offset 0,.5
+set xlabel "Interval From Ease Button" font "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf" #offset 0,.5
 set ylabel "\"Fuzzed\" Interval" font "/usr/share/fonts/truetype/msttcorefonts/arial.ttf" offset 1,0
 set xrange [0:15]
 set yrange [0:15]
