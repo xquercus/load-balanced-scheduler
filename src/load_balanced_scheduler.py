@@ -1,4 +1,4 @@
-        x# Copyright (C) 2018 Jeff Stevens
+# Copyright (C) 2018 Jeff Stevens
 # This software is licensed under the GNU GPL v3
 
 
