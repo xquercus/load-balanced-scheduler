@@ -4,11 +4,11 @@
 
 ## Installation
 
-To manually install this add-on copy the `src` directory and it's contents to your Anki add-on directory.  To find the Anki add-on directory first go go to *Tools -> Add-ons*, un-select any currently highlighted add-ons, and click *Show Files*.  It is generally a good idea to rename the `src` directory.  Anki will use this folder's name as the name of the plugin.  After restarting Anki the add-on will appear in the add-on dialog box.
+To manually install this add-on copy the `src` directory and it's contents to your Anki add-on directory.  To find the Anki add-on directory first go go to *Tools -> Add-ons*, un-select any currently highlighted add-ons, and click *Show Files*.  It is generally a good idea to rename the `src` directory.  Anki will use this folder name as the name of the plugin.  After restarting Anki the add-on will appear in the add-on window.
 
 ## Configuration
 
-Logging to `stdout` can be enabled by setting `DEBUG` from within the configuration dialog box.  A value of `1` will output a one line summary after each card is load balanced.  A value of `2` will provide detailed debug information on the load balancing process.
+Logging can be configured by setting the value of `LogLevel`.  `"LogLevel": 1` will cause a one line summary to be sent to `stdout` each time a card is load balanced.  `"LogLevel": 2` will add detailed information about the load balancing process.  `"LogLevel": 0` will disable logging.  Logs are written to `stdout`.
 
 ## Details
 
@@ -16,8 +16,8 @@ After a card is reviewed, Anki assigns it the interval shown on the ease button 
 
 > After you select an ease button, Anki also applies a small amount of random “fuzz” to prevent cards that were introduced at the same time and given the same ratings from sticking together and always coming up for review on the same day. This fuzz does not appear on the interval buttons, so if you’re noticing a slight discrepancy between what you select and the intervals your cards actually get, this is probably the cause.
 
-![Image](http://foo1.png)
-![Image](http://foo2.png)
+![Image](https://raw.githubusercontent.com/xquercus/load-balanced-scheduler/master/tools/plot120.png)
+![Image](https://raw.githubusercontent.com/xquercus/load-balanced-scheduler/master/tools/plot15.png)
 
 The above plots show the possible "fuzzed" intervals Anki may assign given a particular interval.  Looking at the second plot as an example, if the users selects an ease button with an interval of 10 days, Anki will randomly assign a "fuzzed" interval between 8 and 12 days.  *Load Balanced Scheduler* uses this same range of between 8 and 12 but, instead of selecting at random, will choose an interval with the least number of cards due.
 
@@ -27,7 +27,7 @@ Cards with small intervals will be load balanced over a narrow range.  For examp
 
 ### Failed cards aren't getting load balanced.
 
-This is expected behavior.  *Load Balanced Scheduler* balances cards that stock Anki would "fuzz".  Anki doesn't "fuzz" failed cards when they move back into the review queue so they are not load balanced. Additionally, while this would be easy to add, it would patch core parts of the v2 scheduler which is still in development.  It's not worth putting scheduling at risk if there is a silent failure.  On the other hand, the "fuzz" function itself is low level and has remained stable.
+This is expected behavior.  *Load Balanced Scheduler* balances cards that stock Anki would "fuzz".  Anki doesn't "fuzz" failed cards when they move back into the review queue so they are not load balanced. Additionally, while this would be easy to add, it would patch core parts of the v2 scheduler which is still in development.  It's not worth putting scheduling at risk if there is a silent failure.  The "fuzz" function itself has been very stable over time.
 
 ### Under the v2 scheduler logs show multiple intervals being calculated for the same card.
 
