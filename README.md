@@ -4,9 +4,11 @@
 
 ## Installation
 
-To manually install this add-on copy the `src` directory and it's contents to your Anki add-on directory.  To find the Anki add-on directory first go go to *Tools -> Add-ons*, un-select any currently highlighted add-ons, and click *Show Files*.  It is generally a good idea to rename the `src` directory.  Anki will use this folder name as the name of the plugin.  After restarting Anki the add-on will appear in the add-on window.
+To manually install this add-on copy the `src` directory and it's contents to your Anki add-on directory.  To find the Anki add-on directory first go to *Tools -> Add-ons*, un-select any currently highlighted add-ons, and click *Show Files*.  It is generally a good idea to rename the `src` directory.  Anki will use this folder name as the name of the plugin.  After restarting Anki the add-on will appear in the add-on window.
 
 ## Configuration
+
+Configuration is via the Anki *Add-ons* window.  Highlight *Load Balanced Scheduler* and press the *Config* button.  Anki must be restarted for the new configuration to take effect.
 
 Logging can be configured by setting the value of `LogLevel`.  `"LogLevel": 1` will cause a one line summary to be sent to `stdout` each time a card is load balanced.  `"LogLevel": 2` will add detailed information about the load balancing process.  `"LogLevel": 0` will disable logging.  Logs are written to `stdout`.
 
@@ -31,7 +33,7 @@ This is expected behavior.  *Load Balanced Scheduler* balances cards that stock 
 
 ### Under the v2 scheduler logs show multiple intervals being calculated for the same card.
 
-This is expected behavior. Under the v2 scheduler, logs may show the card being scheduled multiple times.  Anki calculates intervals before checking which ease button the user actually pressed.  It's not clear why this is done but see [this function](https://github.com/dae/anki/blob/b5785f7ec8b3f95f88ba63cc43f9ee7ce829241a/anki/schedv2.py#L895-L915) in `schedv2.py` if you want to explore more.  The end result is that for a NORMAL card the log will show calculated intervals for HARD and NORMAL.  For an EASY cards the log will show calculated intervals for HARD, NORMAL and EASY. In the end, the last interval shown in the log is the one Anki assigns to the card.   
+This is expected behavior. Anki calculates intervals before checking which ease button the user actually pressed.  See [this function](https://github.com/dae/anki/blob/b5785f7ec8b3f95f88ba63cc43f9ee7ce829241a/anki/schedv2.py#L895-L915) in `schedv2.py` if you want to explore more.  The end result is that for a NORMAL card the log will show calculated intervals for HARD and NORMAL.  For an EASY cards the log will show calculated intervals for HARD, NORMAL and EASY. In the end, the last interval shown in the log is the one Anki assigns to the card.   
 
 ## Credits
     
