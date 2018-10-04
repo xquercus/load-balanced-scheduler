@@ -4,7 +4,7 @@
 # LOG_LEVEL = 0  Disables logging.
 # LOG_LEVEL = 1  Logs a one line summary each time a card is load balanced.
 # LOG_LEVEL = 2  Logs additional detailed information about each step of the load balancing process.
-LOG_LEVEL = 2
+LOG_LEVEL = 0
 
 import sys
 import anki
