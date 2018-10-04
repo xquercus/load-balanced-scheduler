@@ -52,7 +52,7 @@ Thank you to Jake Probst for the *Load Balancer* add-on. I used and abused that 
 
 ## Revision History
 
-* Version 1.1.0 -- 09/28/2018
+* Version 1.1.1 -- 10/04/2018
   * Backport to Anki 2.0
   * Move configuration to `load_balanced_scheduler.py`.
 
