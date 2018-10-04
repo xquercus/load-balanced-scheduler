@@ -1,16 +1,23 @@
 # Load Balanced Scheduler
 
-*Load Balanced Scheduler* is an Anki add-on which helps maintain a consistent number of reviews from one day to another.  Intervals are chosen from the same range as stock Anki so as not to affect the SRS algorithm.  It is compatible with Anki 2.1 using both the default and v2 scheduler.
+*Load Balanced Scheduler* is an Anki add-on which helps maintain a consistent number of reviews from one day to another.  Intervals are chosen from the same range as stock Anki so as not to affect the SRS algorithm. It is compatible with:
+* Anki v2.0
+* Anki v2.1 with the default scheduler
+* Anki v2.1 with the [experimental v2 scheduler](https://anki.tenderapp.com/kb/anki-ecosystem/experiment-scheduling-changes-in-anki-21)
 
 ## Installation
 
-To manually install this add-on copy the `src` directory and it's contents to your Anki add-on directory.  To find the Anki add-on directory first go to *Tools -> Add-ons*, un-select any currently highlighted add-ons, and click *Show Files*.  It is generally a good idea to rename the `src` directory.  Anki will use this folder name as the name of the plugin.  After restarting Anki the add-on will appear in the add-on window.
+To install follow the instructions on the AnkiWeb [add-ons page](https://ankiweb.net/shared/info/208879074).
 
 ## Configuration
 
-Configuration is via the Anki *Add-ons* window.  Highlight *Load Balanced Scheduler* and press the *Config* button.  Anki must be restarted for the new configuration to take effect.
+No configuration is required however logging can be enabled.  This is done by setting `LOG_LEVEL` at the top of `load_balanced_scheduler.py`.  The following options are available:
 
-Logging can be configured by setting the value of `LogLevel`.  `"LogLevel": 1` will cause a one line summary to be sent to `stdout` each time a card is load balanced.  `"LogLevel": 2` will add detailed information about the load balancing process.  `"LogLevel": 0` will disable logging.  Logs are written to `stdout`.
+* `LogLevel = 0`: Disables logging.
+* `LogLevel = 1`: Logs a one line summary each time a card is load balanced.
+* `LogLevel = 2`: Logs additional detailed information about each step of the load balancing process.
+
+Logs are sent to `stdout`.  On some systems (e.g. Windows) Anki doesn't direct `stdout` anywhere useful.  On these systems [Le Petit Debugger](https://ankiweb.net/shared/info/2099968349) can be used to view the log output.
 
 ## Details
 
@@ -25,13 +32,17 @@ The above plots show the possible "fuzzed" intervals Anki may assign given a par
 
 Cards with small intervals will be load balanced over a narrow range.  For example, cards with an interval of 3 will be load balanced over days 2-4.  This range expands as the interval increases.  Cards with an interval of 15 will be balanced over days 13-17 and cards with an interval of 30 will be balanced over days 26-34.  Again, these are the same ranges stock Anki uses when randomly assigning intervals.  The exact ranges can be seen [here](https://github.com/dae/anki/blob/b5785f7ec8b3f95f88ba63cc43f9ee7ce829241a/anki/schedv2.py#L921-L934) in the Anki source.
 
+## Bugs and Support
+
+If you encounter a bug or need support   please see the official [README](https://github.com/xquercus/load-balanced-scheduler). Please report bugs through [github](https://github.com/xquercus/load-balanced-scheduler/issues).  Please don't use the review section of the AnkiWeb add-on page for support as I won't receive a notification and there is no way for me to respond.
+
 ## Known Issues
 
 ### Failed cards aren't getting load balanced.
 
 This is expected behavior.  *Load Balanced Scheduler* balances cards that stock Anki would "fuzz".  Anki doesn't "fuzz" failed cards when they move back into the review queue so they are not load balanced. Additionally, while this would be easy to add, it would patch core parts of the v2 scheduler which is still in development.  It's not worth putting scheduling at risk if there is a silent failure.  The "fuzz" function itself has been very stable over time.
 
-### Under the v2 scheduler logs show multiple intervals being calculated for the same card.
+### Under the experimental v2 scheduler logs show multiple intervals being calculated for the same card.
 
 This is expected behavior. Anki calculates intervals before checking which ease button the user actually pressed.  See [this function](https://github.com/dae/anki/blob/b5785f7ec8b3f95f88ba63cc43f9ee7ce829241a/anki/schedv2.py#L895-L915) in `schedv2.py` if you want to explore more.  The end result is that for a NORMAL card the log will show calculated intervals for HARD and NORMAL.  For an EASY cards the log will show calculated intervals for HARD, NORMAL and EASY. In the end, the last interval shown in the log is the one Anki assigns to the card.   
 
@@ -39,3 +50,12 @@ This is expected behavior. Anki calculates intervals before checking which ease 
     
 Thank you to Jake Probst for the *Load Balancer* add-on. I used and abused that thing for a long time. 
 
+## Revision History
+
+* Version 1.1.0 -- 09/28/2018
+  * Backport to Anki 2.0
+  * Move configuration to `load_balanced_scheduler.py`.
+
+
+* Version 1.0.0 -- 09/21/2018
+  * Initial Release

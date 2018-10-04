@@ -1,22 +1,26 @@
 # Copyright (C) 2018 Jeff Stevens
 # This software is licensed under the GNU GPL v3 https://www.gnu.org/licenses/gpl-3.0.html
 
+# LOG_LEVEL = 0  Disables logging.
+# LOG_LEVEL = 1  Logs a one line summary each time a card is load balanced.
+# LOG_LEVEL = 2  Logs additional detailed information about each step of the load balancing process.
+LOG_LEVEL = 2
 
 import sys
 import anki
 import datetime
 from aqt import mw
+from anki import version
 from anki.sched import Scheduler
-from anki.schedv2 import Scheduler
 
 
 def log_info(message):
-    if c["LogLevel"] >= 1:
+    if LOG_LEVEL >= 1:
         sys.stdout.write(message)
 
 
 def log_debug(message):
-    if c["LogLevel"] >= 2:
+    if LOG_LEVEL >= 2:
         sys.stdout.write(message)
 
 
@@ -41,10 +45,11 @@ def load_balanced_ivl(self, ivl):
     return best_ivl
 
 
+# Patch Anki 2.0 and Anki 2.1 default scheduler
 anki.sched.Scheduler._fuzzedIvl = load_balanced_ivl
 
 
-anki.schedv2.Scheduler._fuzzedIvl = load_balanced_ivl
-
-
-c = mw.addonManager.getConfig(__name__)
+# Patch Anki 2.1 experimental v2 scheduler
+if version.startswith("2.1"):
+    from anki.schedv2 import Scheduler
+    anki.schedv2.Scheduler._fuzzedIvl = load_balanced_ivl
