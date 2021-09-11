@@ -46,6 +46,10 @@ This is expected behavior.  *Load Balanced Scheduler* balances cards that stock 
 
 This is expected behavior. Anki calculates intervals before checking which ease button the user actually pressed.  See [this function](https://github.com/ankitects/anki/blob/9f0929db32aaa9b589af20d7c8abb1a433e76cff/pylib/anki/scheduler/v2.py#L904-L925) in `scheduler/v2.py` if you want to explore more.  The end result is that for a NORMAL card the log will show calculated intervals for HARD and NORMAL.  For an EASY cards the log will show calculated intervals for HARD, NORMAL and EASY. In the end, the last interval shown in the log is the one Anki assigns to the card.
 
+### Filtered decks don't get load balanced.
+
+This is due to Anki not calling the "fuzz" function when using filtered decks. More info in [issue #5](https://github.com/xquercus/load-balanced-scheduler/issues/5#issuecomment-438806514).
+
 ## Credits
     
 Thank you to Jake Probst for the *Load Balancer* add-on. I used and abused that thing for a long time. 
