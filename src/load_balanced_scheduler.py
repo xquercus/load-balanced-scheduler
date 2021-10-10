@@ -12,6 +12,7 @@ import datetime
 from aqt import mw
 from anki import version
 from anki.sched import Scheduler
+from anki.consts import *
 
 
 def log_info(message):
@@ -22,6 +23,53 @@ def log_info(message):
 def log_debug(message):
     if LOG_LEVEL >= 2:
         sys.stdout.write(message)
+
+
+def _fixedNextRevIvl(self, card, ease, fuzz):
+    "Next review interval for CARD, given EASE."
+    delay = self._daysLate(card)
+    conf = self._revConf(card)
+    fct = card.factor / 1000
+    hardFactor = conf.get("hardFactor", 1.2)
+    if hardFactor > 1:
+        hardMin = card.ivl
+    else:
+        hardMin = 0
+
+    ivl2 = self._constrainedIvl(card.ivl * hardFactor, conf, hardMin, fuzz)
+    if ease == BUTTON_TWO:
+        if fuzz:
+            ivl2 = self._fuzzedIvl(ivl2)
+
+        log_debug(f"\nHard button pressed. Setting card interval to: {ivl2} days\n")
+        return ivl2
+
+    ivl3 = self._constrainedIvl((card.ivl + delay // 2) * fct, conf, ivl2, fuzz)
+    if ease == BUTTON_THREE:
+        if fuzz:
+            ivl3 = self._fuzzedIvl(ivl3)
+
+        log_debug(f"\nGood button pressed. Setting card interval to: {ivl3} days\n")
+        return ivl3
+
+    ivl4 = self._constrainedIvl(
+        (card.ivl + delay) * fct * conf["ease4"], conf, ivl3, fuzz
+    )
+    if fuzz:
+        ivl4 = self._fuzzedIvl(ivl4)
+
+    log_debug(f"\nEasy button pressed. Setting card interval to: {ivl4} days\n")
+    return ivl4
+
+
+# Note, we cannot remove the fuzz parameter despite it not being needed because
+# _earlyReviewIvl calls it with
+# ivl = self._constrainedIvl(ivl, conf, prev=0, fuzz=False)
+def _fixedConstrainedIvl(self, ivl, conf, prev, fuzz):
+    ivl = int(ivl * conf.get("ivlFct", 1))
+    ivl = max(ivl, prev + 1, 1)
+    ivl = min(ivl, conf["maxIvl"])
+    return int(ivl)
 
 
 def load_balanced_ivl(self, ivl):
@@ -45,11 +93,27 @@ def load_balanced_ivl(self, ivl):
     return best_ivl
 
 
-# Patch Anki 2.0 and Anki 2.1 default scheduler
+# Patch Anki v1 scheduler
+# Note: We do not need to patch _nextRevIvl or _constrainedIvl because there is
+# no bug in the v1 scheduler
 anki.sched.Scheduler._fuzzedIvl = load_balanced_ivl
 
 
-# Patch Anki 2.1 experimental v2 scheduler
+# Patch Anki v2 scheduler
 if version.startswith("2.1"):
     from anki.schedv2 import Scheduler
+
+    # We need to patch _nextRevIvl and _constrainedIvl because there is a bug
+    # with the v2 scheduler
+    # See: https://github.com/ankitects/anki/issues/1416
+    #
+    # TODO: Once the above anki issue has been resolved, we shouldn't need to
+    # patch these functions anymore.
+    #
+    # However, to ensure backwards compatibility for this addon, we will need to
+    # check the anki PATCH version (MAJOR.MINOR.PATCH, ie: the 48 in v2.1.48)
+    # and still apply these patches to all anki clients below that version
+    anki.schedv2.Scheduler._nextRevIvl = _fixedNextRevIvl
+    anki.schedv2.Scheduler._constrainedIvl = _fixedConstrainedIvl
+
     anki.schedv2.Scheduler._fuzzedIvl = load_balanced_ivl
