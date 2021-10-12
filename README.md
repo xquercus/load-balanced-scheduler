@@ -48,7 +48,7 @@ This is expected behavior. Anki calculates intervals before checking which ease 
 
 ### Filtered decks don't get load balanced.
 
-This is due to Anki not calling the "fuzz" function when using filtered decks. More info in [issue #5](https://github.com/xquercus/load-balanced-scheduler/issues/5#issuecomment-438806514).
+This happens when using filtered decks to study ahead. For early reviews, Anki uses a different method to compute intervals and does not apply "fuzz" to these cards. Thus, *Load Balanced Scheduler* will not balance them. (See [issue #5](https://github.com/xquercus/load-balanced-scheduler/issues/5#issuecomment-438806514))
 
 ## Credits
     
